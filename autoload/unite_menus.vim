@@ -25,7 +25,7 @@ function! s:Redefine_unite_menu_menus() abort
   endfunction
 endfunction
 
-function! s:Map_candidates(key, value) abort
+function! unite_menus#Map_candidates(key, value) abort
   let keys = ''
   if has_key(a:value, 'keymap')
     let keys = a:value['keymap']['keys']
@@ -67,7 +67,7 @@ function! unite_menus#Define(name, description, keymap, candidates) abort
         \   a:name : {
         \     'description': menu_description,
         \     'candidates': a:candidates,
-        \     'map': function("s:Map_candidates"),
+        \     'map': function("unite_menus#Map_candidates"),
         \   }
         \ })
 
