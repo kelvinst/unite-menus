@@ -61,53 +61,7 @@ function! s:Define_keymappings(name, keymap, candidates) abort
   endfor
 endfunction
 
-" This method will define a new unite menu. The signature is the following:
-"
-" g:Define_unite_menu(name, description, keymap, candidates)
-"
-" params:
-"   name:        String     -> the identifier name of the menu
-"   description: String     -> a description that will be used on the menu list
-"     opened by the <Leader>/ default keymap
-"   keymap:      String     -> the keymap that will be used to directly open the
-"     menu
-"   candidates:  Dictionary -> the menu candidates to be defined, each key of
-"     the dictionary must point to another dictionary with the following config:
-"
-"     description: String     -> the description that will be used on the menu
-"       list
-"     keymap:      Dictionary -> a dictonary containing
-"       keys:      String     -> the keymap that will be used to directly call
-"         the candidate command
-"       with_cr:   Integer    -> defines if the keymapping need to add a <CR>
-"         at the end of command or not (everything different from 1)
-"     command:     String     -> the command that needs to be executed when
-"       the candidate is selected
-"
-"
-" e.g. call:
-"
-" call g:Define_unite_menu("shortcuts", "Shortcuts", "<Leader>s", {
-"       \   'reload_vimrc': {
-"       \     'description': 'Reload .vimrc',
-"       \     'keymap': {'keys': '<Leader>vr', 'with_cr': 1},
-"       \     'command': 'so $MYVIMRC',
-"       \   },
-"       \   'edit_vimrc': {
-"       \     'description': 'Edit .vimrc',
-"       \     'keymap': {'keys': '<Leader>ve', 'with_cr': 0},
-"       \     'command': 'vsplit $MYVIMRC',
-"       \   },
-"       \   'edit_zshrc': {
-"       \     'description': 'Edit .zshrc',
-"       \     'command': 'vsplit ~/.zshrc',
-"       \   },
-"       \   'edit_gitconfig': {
-"       \     'description': 'Edit .gitconfig',
-"       \     'command': 'vsplit ~/.gitconfig',
-"       \   },
-"       \ })
-function! g:Define_unite_menu(name, description, keymap, candidates) abort
+function! unite-menus#Define(name, description, keymap, candidates) abort
   let menu_description = printf('▷ %-40s %37s', a:description, a:keymap)
   let g:unite_source_menu_menus = extend(g:unite_source_menu_menus, {
         \   a:name : {

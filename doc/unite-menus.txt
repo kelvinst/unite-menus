@@ -16,46 +16,42 @@ documentation.
 
 FUNCTIONS                                                *unite-menus-functions*
 
-                                               *unite-menus-g:Define_unite_menu*
-g:Define_unite_menu       This method will define a brand new unite menu,
+                                                             *unite#Define_menu*
+unite-menus#Define        This method will define a brand new unite menu,
                           following some convnetions of style. The signature
                           is the following:
 >
-        g:Define_unite_menu(name, description, keymap, candidates)
+        unite-menus#Define(name, description, keymap, candidates)
 <
 
                           And these are the params explanation:
 
-  name         String       The identifier name of the menu
-
-  description  String       A description that will be used on the menu list
-                            opened by the <Leader>/ default keymap
-
-  keymap       String       The keymap that will be used to directly open the
-                            menu
-
-  candidates   Dictionary   The menu candidates to be defined, each key of
-                            the dictionary must point to another dictionary with
-                            the following config:
-
+>
+  name         String         The identifier name of the menu
+  description  String         A description that will be used on the menu list
+                              opened by the <Leader>/ default keymap
+  keymap       String         The keymap that will be used to directly open the
+                              menu
+  candidates   Dictionary     The menu candidates to be defined, each key of
+                              the dictionary must point to another dictionary
+                              with the following config:
     description  String       The description that will be used on the menu
                               list
-
-    keymap       Dictionary   A dictonary containing
-
-      keys         String       The keymap that will be used to directly call
-                                the candidate command
-      with_cr      Integer      Defines if the keymapping need to add a <CR>
-                                at the end of command or not (everything
-                                different from 1 is false)
+    keymap       Dictionary   A dictonary containing:
+      keys         String     The keymap that will be used to directly call the
+                              candidate command
+      with_cr      Integer    Defines if the keymapping need to add a <CR> at
+                              the end of command or not (everything different
+                              from 1 is false)
 
     command      String      The command that needs to be executed when
       the candidate is selected
+<
 
                           Here is a call example for you:
 
 >
-        call g:Define_unite_menu("shortcuts", "Shortcuts", "<Leader>s", {
+        call unite-menus#Define("shortcuts", "Shortcuts", "<Leader>s", {
               \   'reload_vimrc': {
               \     'description': 'Reload .vimrc',
               \     'keymap': {'keys': '<Leader>vr', 'with_cr': 1},
