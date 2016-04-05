@@ -61,7 +61,7 @@ function! s:Define_keymappings(name, keymap, candidates) abort
   endfor
 endfunction
 
-function! unite-menus#Define(name, description, keymap, candidates) abort
+function! unite_menus#Define(name, description, keymap, candidates) abort
   let menu_description = printf('▷ %-40s %37s', a:description, a:keymap)
   let g:unite_source_menu_menus = extend(g:unite_source_menu_menus, {
         \   a:name : {

@@ -16,12 +16,12 @@ documentation.
 
 FUNCTIONS                                                *unite-menus-functions*
 
-                                                             *unite#Define_menu*
-unite-menus#Define        This method will define a brand new unite menu,
+                                                       *unite_menus#Define_menu*
+unite_menus#Define        This method will define a brand new unite menu,
                           following some convnetions of style. The signature
                           is the following:
 >
-        unite-menus#Define(name, description, keymap, candidates)
+        unite_menus#Define(name, description, keymap, candidates)
 <
 
                           And these are the params explanation:
@@ -51,7 +51,7 @@ unite-menus#Define        This method will define a brand new unite menu,
                           Here is a call example for you:
 
 >
-        call unite-menus#Define("shortcuts", "Shortcuts", "<Leader>s", {
+        call unite_menus#Define("shortcuts", "Shortcuts", "<Leader>s", {
               \   'reload_vimrc': {
               \     'description': 'Reload .vimrc',
               \     'keymap': {'keys': '<Leader>vr', 'with_cr': 1},
