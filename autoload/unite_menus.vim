@@ -51,8 +51,7 @@ function! unite_menus#Map_candidates(key, value) abort
     let keys = a:value['keymap']['keys']
   endif
 
-  let item_description = printf('▷ %-40s %37s', a:value['description'],
-        \ keys)
+  let item_description = printf('▷ %-40s %37s', a:key, keys)
 
   return {
         \   'word': item_description,

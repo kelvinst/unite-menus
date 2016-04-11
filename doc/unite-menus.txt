@@ -11,12 +11,12 @@ If you like the menus functionality of unite, but you find it a little
 reapeating to define the commands, the keymap for them and linking everything,
 this plugin is for you!
 
-The main function is the |g:Define_unite_menu|. Keep scrolling to find its
+The main function is the |unite_menus#Define|. Keep scrolling to find its
 documentation.
 
 FUNCTIONS                                                *unite-menus-functions*
 
-                                                       *unite_menus#Define_menu*
+                                                            *unite_menus#Define*
 unite_menus#Define        This method will define a brand new unite menu,
                           following some convnetions of style. The signature
                           is the following:
@@ -32,11 +32,10 @@ unite_menus#Define        This method will define a brand new unite menu,
                               opened by the <Leader>/ default keymap
   keymap       String         The keymap that will be used to directly open the
                               menu
-  candidates   Dictionary     The menu candidates to be defined, each key of
-                              the dictionary must point to another dictionary
-                              with the following config:
-    description  String       The description that will be used on the menu
-                              list
+  candidates   Dictionary     The menu candidates to be defined, the key will be
+                              used for the menu description, and each key of the
+                              dictionary must point to another dictionary with
+                              the following config:
     keymap       Dictionary   A dictonary containing:
       keys         String     The keymap that will be used to directly call the
                               candidate command
@@ -52,22 +51,18 @@ unite_menus#Define        This method will define a brand new unite menu,
 
 >
         call unite_menus#Define("shortcuts", "Shortcuts", "<Leader>s", {
-              \   'reload_vimrc': {
-              \     'description': 'Reload .vimrc',
+              \   'Reload .vimrc': {
               \     'keymap': {'keys': '<Leader>vr', 'with_cr': 1},
               \     'command': 'so $MYVIMRC',
               \   },
-              \   'edit_vimrc': {
-              \     'description': 'Edit .vimrc',
+              \   'Edit .vimrc': {
               \     'keymap': {'keys': '<Leader>ve', 'with_cr': 0},
               \     'command': 'vsplit $MYVIMRC',
               \   },
-              \   'edit_zshrc': {
-              \     'description': 'Edit .zshrc',
+              \   'Edit .zshrc': {
               \     'command': 'vsplit ~/.zshrc',
               \   },
-              \   'edit_gitconfig': {
-              \     'description': 'Edit .gitconfig',
+              \   'Edit .gitconfig': {
               \     'command': 'vsplit ~/.gitconfig',
               \   },
               \ })
