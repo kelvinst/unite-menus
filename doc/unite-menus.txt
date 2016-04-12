@@ -36,15 +36,15 @@ unite_menus#Define        This method will define a brand new unite menu,
                               used for the menu description, and each key of the
                               dictionary must point to another dictionary with
                               the following config:
-    keymap       Dictionary   A dictonary containing:
-      keys         String     The keymap that will be used to directly call the
+    keymap         Dictionary The keymap that will be used to directly call the
                               candidate command
-      with_cr      Integer    Defines if the keymapping need to add a <CR> at
-                              the end of command or not (everything different
-                              from 1 is false)
+    command        String     The command that needs to be executed when
+                              the candidate is selected
+    command_action String     Accepts the strings: 'execute' and 'complete'. And
+                              defines what needs to be done with the command
+                              when you select the menu item.
+                              Defaults to 'execute'
 
-    command      String      The command that needs to be executed when
-      the candidate is selected
 <
 
                           Here is a call example for you:
@@ -52,12 +52,14 @@ unite_menus#Define        This method will define a brand new unite menu,
 >
         call unite_menus#Define("shortcuts", "Shortcuts", "<Leader>s", {
               \   'Reload .vimrc': {
-              \     'keymap': {'keys': '<Leader>vr', 'with_cr': 1},
+              \     'keymap': '<Leader>vr',
               \     'command': 'so $MYVIMRC',
+              \     'command_action': 'execute',
               \   },
               \   'Edit .vimrc': {
-              \     'keymap': {'keys': '<Leader>ve', 'with_cr': 0},
+              \     'keymap': '<Leader>ve',
               \     'command': 'vsplit $MYVIMRC',
+              \     'command_action': 'complete',
               \   },
               \   'Edit .zshrc': {
               \     'command': 'vsplit ~/.zshrc',
