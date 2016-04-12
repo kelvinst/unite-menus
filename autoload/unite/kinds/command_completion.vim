@@ -1,6 +1,9 @@
 "=============================================================================
-" FILE: command.vim
-" AUTHOR:  Shougo Matsushita <Shougo.Matsu@gmail.com>
+" FILE: command_completion.vim
+" AUTHOR:  Kelvin Stinghen <kelvin.stinghen@gmail.com>
+" ORIGINAL_AUTHOR:  Shougo Matsushita <Shougo.Matsu@gmail.com>
+" ORIGINAL_FILE: https://raw.githubusercontent.com/Shougo/unite.vim/master/autoload/unite/kinds/command.vim
+" ORIGINAL_FILE_VERSION: commit "738c5cb" on "Feb 8"
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -34,30 +37,9 @@ let s:kind = {
       \ 'name' : 'command_completion',
       \ 'default_action' : 'edit',
       \ 'action_table': {},
-      \ 'alias_table' : { 'ex' : 'nop' },
       \}
 
 " Actions "{{{
-let s:kind.action_table.execute = {
-      \ 'description' : 'execute command',
-      \ 'is_selectable' : 1,
-      \ }
-function! s:kind.action_table.execute.func(candidates) abort "{{{
-  for candidate in a:candidates
-    if get(candidate, 'action__command_args', '0') !=# '0'
-      " Use edit action
-      call s:kind.action_table.edit.func(candidate)
-      continue
-    endif
-
-    let command = candidate.action__command
-    let type = get(candidate, 'action__type', ':')
-    if get(candidate, 'action__histadd', 0)
-      call s:add_history(type, command)
-    endif
-    call s:execute_command(type . command)
-  endfor
-endfunction"}}}
 let s:kind.action_table.edit = {
       \ 'description' : 'edit command',
       \ }
@@ -89,16 +71,8 @@ function! s:kind.action_table.edit.func(candidate) abort "{{{
     call s:execute_command(command)
   endif
 endfunction"}}}
-let s:kind.action_table.grep = {
-      \ 'description' : 'grep this command',
-      \ 'is_start' : 1,
-      \ }
-function! s:kind.action_table.grep.func(candidate) abort "{{{
-  call unite#start_script([
-        \ ['grep', '', '', a:candidate.action__command]],
-        \ { 'no_quit' : 1, 'no_empty' : 1 })
-endfunction"}}}
 "}}}
+
 function! s:add_history(type, command) abort "{{{
   call histadd(a:type, a:command)
   if a:type ==# '/'
