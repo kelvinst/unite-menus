@@ -25,6 +25,15 @@ function! s:Redefine_unite_menu_menus() abort
   endfunction
 endfunction
 
+function! s:Get_command_action(candidate)
+  let command_action = 'execute'
+  if has_key(a:candidate, 'command_action')
+    let command_action = a:candidate['command_action']
+  endif
+
+  return command_action
+endfunction
+
 function! s:Define_keymappings(name, menu_keymap, candidates) abort
   exec 'nmap '.a:menu_keymap.' :Unite -silent -ignorecase menu:'.a:name.'<CR>'
 
@@ -37,11 +46,7 @@ function! s:Define_keymappings(name, menu_keymap, candidates) abort
 
       let keymap_cmd = 'nmap '.keymap.' :'.cmd
 
-      let command_action = 'execute'
-      if has_key(candidate, 'command_action')
-        let command_action = candidate['command_action']
-      endif
-
+      let command_action = s:Get_command_action(candidate)
       if command_action == 'execute'
         let keymap_cmd = keymap_cmd.'<CR>'
       endif
@@ -58,6 +63,15 @@ function! unite_menus#Map_candidates(key, value) abort
   endif
 
   let item_description = printf('▷ %-40s %37s', a:key, keymap)
+
+  let command_action = s:Get_command_action(a:value)
+  if command_action == 'complete'
+    return {
+          \   'word': item_description,
+          \   'kind': 'command_completion',
+          \   'action__command': a:value['command']
+          \ }
+  endif
 
   return {
         \   'word': item_description,
