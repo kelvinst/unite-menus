@@ -6,6 +6,19 @@ let g:unite_source_menu_menus = {
 
 nmap <Leader>/ :Unite -silent menu:menus<CR>
 
+function! s:Get_open_menu_command(key) abort
+  return 'Unite -silent menu:'.a:key
+endfunction
+
+function! s:Get_command_action(candidate)
+  let command_action = 'execute'
+  if has_key(a:candidate, 'command_action')
+    let command_action = a:candidate['command_action']
+  endif
+
+  return command_action
+endfunction
+
 function! s:Redefine_unite_menu_menus() abort
   let g:unite_source_menu_menus.menus.candidates = {}
 
@@ -20,23 +33,14 @@ function! s:Redefine_unite_menu_menus() abort
     return {
           \   'word': a:value['description'],
           \   'kind': 'command',
-          \   'action__command': 'Unite -silent menu:'.a:key
+          \   'action__command': s:Get_open_menu_command(a:key),
           \ }
   endfunction
 endfunction
 
-function! s:Get_command_action(candidate)
-  let command_action = 'execute'
-  if has_key(a:candidate, 'command_action')
-    let command_action = a:candidate['command_action']
-  endif
-
-  return command_action
-endfunction
-
 function! s:Define_keymappings(name, menu_keymap, candidates) abort
-  exec 'nmap '.a:menu_keymap.' :Unite -silent menu:'.a:name.'<CR>'
-  exec 'nmap '.a:menu_keymap.'/ :Unite -silent menu:'.a:name.'<CR>'
+  exec 'nmap '.a:menu_keymap.' :'.s:Get_open_menu_command(a:name).'<CR>'
+  exec 'nmap '.a:menu_keymap.'/ :'.s:Get_open_menu_command(a:name).'<CR>'
 
   for key in keys(a:candidates)
     let candidate = a:candidates[key]
