@@ -1,10 +1,10 @@
 let g:unite_source_menu_menus = {
       \   'menus': {
-      \     'description': '▷ This menu                                                            <Leader>m'
+      \     'description': 'menus menu'
       \   }
       \ }
 
-nmap <Leader>/ :Unite -silent -ignorecase menu:menus<CR>
+nmap <Leader>/ :Unite -silent menu:menus<CR>
 
 function! s:Redefine_unite_menu_menus() abort
   let g:unite_source_menu_menus.menus.candidates = {}
@@ -20,7 +20,7 @@ function! s:Redefine_unite_menu_menus() abort
     return {
           \   'word': a:value['description'],
           \   'kind': 'command',
-          \   'action__command': 'Unite -silent -ignorecase menu:'.a:key
+          \   'action__command': 'Unite -silent menu:'.a:key
           \ }
   endfunction
 endfunction
@@ -35,7 +35,8 @@ function! s:Get_command_action(candidate)
 endfunction
 
 function! s:Define_keymappings(name, menu_keymap, candidates) abort
-  exec 'nmap '.a:menu_keymap.' :Unite -silent -ignorecase menu:'.a:name.'<CR>'
+  exec 'nmap '.a:menu_keymap.' :Unite -silent menu:'.a:name.'<CR>'
+  exec 'nmap '.a:menu_keymap.'/ :Unite -silent menu:'.a:name.'<CR>'
 
   for key in keys(a:candidates)
     let candidate = a:candidates[key]
