@@ -19,6 +19,18 @@ function! s:Get_command_action(candidate)
   return command_action
 endfunction
 
+function! s:Get_keymaps(candidate, menu_keymap) abort
+  let keymaps = []
+  if has_key(a:candidate, 'keymap')
+    call add(keymaps, printf('%s%s', a:menu_keymap, a:candidate['keymap']))
+  endif
+  if has_key(a:candidate, 'global_keymap')
+    call add(keymaps, a:candidate['global_keymap'])
+  endif
+
+  return keymaps
+endfunction
+
 function! s:Redefine_unite_menu_menus() abort
   let g:unite_source_menu_menus.menus.candidates = {}
 
@@ -45,10 +57,9 @@ function! s:Define_keymappings(name, menu_keymap, candidates) abort
   for key in keys(a:candidates)
     let candidate = a:candidates[key]
 
-    if has_key(candidate, 'keymap')
+    let keymaps = s:Get_keymaps(candidate, a:menu_keymap)
+    for keymap in keymaps
       let cmd = candidate['command']
-      let keymap = candidate['keymap']
-
       let keymap_cmd = 'nmap '.keymap.' :'.cmd
 
       let command_action = s:Get_command_action(candidate)
@@ -57,17 +68,13 @@ function! s:Define_keymappings(name, menu_keymap, candidates) abort
       endif
 
       exec keymap_cmd
-    endif
+    endfor
   endfor
 endfunction
 
 function! unite_menus#Map_candidates(key, value) abort
-  let keymap = ''
-  if has_key(a:value, 'keymap')
-    let keymap = a:value['keymap']
-  endif
-
-  let item_description = printf('▷ %-40s %37s', a:key, keymap)
+  let keymaps = s:Get_keymaps(a:value, '<relative>')
+  let item_description = printf('▷ %-40s %37s', a:key, join(keymaps, ' '))
 
   let command_action = s:Get_command_action(a:value)
   if command_action == 'complete'
