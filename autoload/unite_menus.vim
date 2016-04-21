@@ -50,8 +50,12 @@ function! s:Redefine_unite_menu_menus() abort
   endfunction
 endfunction
 
-function! s:Define_keymaps(keymaps) abort
-  for keymap in a:keymaps
+function! unite_menus#Map_candidates(key, value) abort
+  let keymaps = s:Get_keymaps(a:value, a:value['menu_keymap'])
+  let command_action = s:Get_command_action(a:value)
+
+  " Keymap definition
+  for keymap in keymaps
     let cmd = a:value['command']
     let keymap_cmd = 'nmap '.keymap.' :'.cmd
 
@@ -61,18 +65,6 @@ function! s:Define_keymaps(keymaps) abort
 
     exec keymap_cmd
   endfor
-endfunction
-
-function! s:Define_menu_keymaps(keymap, name) abort
-  exec 'nmap '.a:keymap.' :'.s:Get_open_menu_command(a:name).'<CR>'
-  exec 'nmap '.a:keymap.'/ :'.s:Get_open_menu_command(a:name).'<CR>'
-endfunction
-
-function! unite_menus#Map_candidates(key, value) abort
-  let keymaps = s:Get_keymaps(a:value, a:value['menu_keymap'])
-  let command_action = s:Get_command_action(a:value)
-
-  call s:Define_keymap(keymaps)
 
   let item_description = printf('▷ %-40s %37s', a:key, join(keymaps, ' '))
   if command_action == 'complete'
@@ -109,7 +101,8 @@ function! unite_menus#Define(name, description, keymap, candidates) abort
   " This will recalculate the menus menu every new menu added
   call s:Redefine_unite_menu_menus()
 
-  call s:Define_menu_keymaps(a:keymap, a:name)
+  exec 'nmap '.a:keymap.' :'.s:Get_open_menu_command(a:name).'<CR>'
+  exec 'nmap '.a:keymap.'/ :'.s:Get_open_menu_command(a:name).'<CR>'
 
   return 1
 endfunction
