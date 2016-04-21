@@ -1,16 +1,13 @@
 let g:unite_source_menu_menus = {
       \   'menus': {
-      \     'description': 'Menus Menu'
+      \     'description': 'Menus Menu',
+      \     'candidates': [],
       \   }
       \ }
 
 nmap <Leader>/ :Unite -silent menu:menus<CR>
 
-function! s:Get_open_menu_command(key) abort
-  return 'Unite -silent menu:'.a:key
-endfunction
-
-function! s:Get_command_action(candidate)
+function! s:Get_command_action(candidate) abort
   let command_action = 'execute'
   if has_key(a:candidate, 'command_action')
     let command_action = a:candidate['command_action']
@@ -31,32 +28,17 @@ function! s:Get_keymaps(candidate, menu_keymap) abort
   return keymaps
 endfunction
 
-function! s:Redefine_unite_menu_menus() abort
-  let g:unite_source_menu_menus.menus.candidates = {}
-
-  for key in keys(g:unite_source_menu_menus)
-    if key != "menus"
-      let g:unite_source_menu_menus.menus.candidates[key] =
-            \ g:unite_source_menu_menus[key]
-    endif
-  endfor
-
-  function! g:unite_source_menu_menus.menus.map(key, value)
-    return {
-          \   'word': a:value['long_description'],
-          \   'kind': 'command',
-          \   'action__command': s:Get_open_menu_command(a:key),
-          \ }
-  endfunction
+function! s:Get_menu_item_word(description, keymaps) abort
+  return printf('▷ %-40s %37s', a:description, join(a:keymaps, ' '))
 endfunction
 
-function! unite_menus#Map_candidates(key, value) abort
-  let keymaps = s:Get_keymaps(a:value, a:value['menu_keymap'])
-  let command_action = s:Get_command_action(a:value)
+function! s:Handle_candidate(key, candidate, menu_keymap) abort
+  let keymaps = s:Get_keymaps(a:candidate, a:menu_keymap)
+  let command_action = s:Get_command_action(a:candidate)
 
   " Keymap definition
   for keymap in keymaps
-    let cmd = a:value['command']
+    let cmd = a:candidate['command']
     let keymap_cmd = 'nmap '.keymap.' :'.cmd
 
     if command_action == 'execute'
@@ -66,44 +48,47 @@ function! unite_menus#Map_candidates(key, value) abort
     exec keymap_cmd
   endfor
 
-  let item_description = printf('▷ %-40s %37s', a:key, join(keymaps, ' '))
+  let new_candidate = {
+        \   'word': s:Get_menu_item_word(a:key, keymaps),
+        \   'kind': 'command',
+        \   'action__command': a:candidate['command']
+        \ }
+
   if command_action == 'complete'
-    return {
-          \   'word': item_description,
-          \   'kind': 'command_completion',
-          \   'action__command': a:value['command']
-          \ }
+    let new_candidate['kind'] = 'command_completion'
   endif
 
-  return {
-        \   'word': item_description,
-        \   'kind': 'command',
-        \   'action__command': a:value['command']
-        \ }
+  return new_candidate
+endfunction
+
+function! s:Handle_candidates(menu_keymap, candidates) abort
+  let new_candidates = []
+
+  for key in sort(keys(a:candidates))
+    let candidate = a:candidates[key]
+    call add(new_candidates, s:Handle_candidate(key, candidate, a:menu_keymap))
+  endfor
+
+  return new_candidates
 endfunction
 
 function! unite_menus#Define(name, description, keymap, candidates) abort
-  for key in keys(a:candidates)
-    let candidate = a:candidates[key]
-    let candidate['menu_keymap'] = a:keymap
-  endfor
-
-  let menu_description = printf('▷ %-40s %37s', a:description, a:keymap)
   let g:unite_source_menu_menus = extend(g:unite_source_menu_menus, {
         \   a:name : {
-        \     'long_description': menu_description,
         \     'description': a:description,
-        \     'candidates': a:candidates,
-        \     'map': function("unite_menus#Map_candidates"),
+        \     'candidates': s:Handle_candidates(a:keymap, a:candidates),
         \   }
         \ })
 
-  " This will recalculate the menus menu every new menu added
-  call s:Redefine_unite_menu_menus()
+  let open_menu_command = 'Unite -silent menu:'.a:name
+  call add(g:unite_source_menu_menus.menus.candidates, {
+        \   'word': s:Get_menu_item_word(a:description, [a:keymap]),
+        \   'kind': 'command',
+        \   'action__command': open_menu_command,
+        \ })
 
-  exec 'nmap '.a:keymap.' :'.s:Get_open_menu_command(a:name).'<CR>'
-  exec 'nmap '.a:keymap.'/ :'.s:Get_open_menu_command(a:name).'<CR>'
-
+  exec 'nmap '.a:keymap.' :'.open_menu_command.'<CR>'
+  exec 'nmap '.a:keymap.'/ :'.open_menu_command.'<CR>'
   return 1
 endfunction
 
