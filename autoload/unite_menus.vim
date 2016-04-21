@@ -20,13 +20,13 @@ endfunction
 
 call s:Define_keymap(g:unite_menus_keymap, 'Unite -silent menu:menus', 1)
 
-function! s:Get_command_action(candidate) abort
-  let command_action = 'execute'
-  if has_key(a:candidate, 'command_action')
-    let command_action = a:candidate['command_action']
+function! s:Get_kind(candidate) abort
+  let kind = 'command'
+  if has_key(a:candidate, 'kind')
+    let kind = a:candidate['kind']
   endif
 
-  return command_action
+  return kind
 endfunction
 
 function! s:Get_relative_keymaps(menu_keymap, relative_keymaps)
@@ -77,29 +77,31 @@ function! s:Get_menu_item_word(description, keymaps) abort
   return printf('▷ %-40s %37s', a:description, join(a:keymaps, ' '))
 endfunction
 
-function! s:Handle_candidate(key, candidate, menu_keymaps) abort
+function! s:Define_keymaps(candidate, menu_keymaps) abort
   let keymaps = s:Get_keymaps(a:candidate, a:menu_keymaps)
-  let command_action = s:Get_command_action(a:candidate)
+  let kind = s:Get_kind(a:candidate)
 
-  " Keymap definition
   for keymap in keymaps
     let with_cr = 0
-    if command_action == 'execute'
+    if kind == 'command'
       let with_cr = 1
     endif
 
-    call s:Define_keymap(keymap, a:candidate['command'], with_cr)
+    if has_key(a:candidate, 'action__command')
+      call s:Define_keymap(keymap, a:candidate.action__command, with_cr)
+    endif
   endfor
 
-  let new_candidate = {
-        \   'word': s:Get_menu_item_word(a:key, keymaps),
-        \   'kind': 'command',
-        \   'action__command': a:candidate['command']
-        \ }
+  return keymaps
+endfunction
 
-  if command_action == 'complete'
-    let new_candidate['kind'] = 'command_completion'
-  endif
+function! s:Handle_candidate(key, candidate, menu_keymaps) abort
+  let keymaps = s:Define_keymaps(a:candidate, a:menu_keymaps)
+
+  let new_candidate = extend(a:candidate, {
+        \   'word': s:Get_menu_item_word(a:key, keymaps),
+        \   'kind': s:Get_kind(a:candidate),
+        \ })
 
   return new_candidate
 endfunction
@@ -140,25 +142,24 @@ function! unite_menus#Define(menus) abort
           \   },
           \ })
 
-    let open_menu_command = 'Unite -silent menu:'.key
-
     if has_key(value, 'parent_menu')
       let parent_name = value.parent_menu
       let parent_menu = g:unite_source_menu_menus[parent_name]
 
       call add(parent_menu.candidates, {
             \   'word': s:Get_menu_item_word(value.description, keymaps),
-            \   'kind': 'command',
-            \   'action__command': open_menu_command,
+            \   'kind': 'menu',
+            \   'action__menu': key,
             \ })
     else
       call add(g:unite_source_menu_menus.menus.candidates, {
             \   'word': s:Get_menu_item_word(value.description, keymaps),
-            \   'kind': 'command',
-            \   'action__command': open_menu_command,
+            \   'kind': 'menu',
+            \   'action__menu': key,
             \ })
     endif
 
+    let open_menu_command = 'Unite -silent menu:'.key
     for keymap in keymaps
       call s:Define_keymap(keymap, open_menu_command, 1)
       call s:Define_keymap(keymap.'/', open_menu_command, 1)

@@ -74,10 +74,15 @@ unite_menus#Define        This method will define a brand new unite menu,
               \\        " This will create a global shortcut for this menu item
               \         'keymap': '<Leader>ve',
               \         'command': 'vsplit $MYVIMRC',
-              \\        " This defines which action (execute or complete) will
-              \\        " be executed when you select this menu, defaults to
-              \\        " 'execute'
-              \         'command_action': 'complete',
+              \\        " This defines which kind of action will be executed
+              \\        " when you select this menu, defaults to 'command', to
+              \\        " more information about these kinds, just do a
+              \\        " ':h unite-kinds' to go to its documentation.
+              \\        "
+              \\        " PS.: This plugin adds a new kind 'command_completion',
+              \\        " which is exactly the same of 'command', but with the
+              \\        " default action poiting to 'edit' action, not 'open'
+              \         'kind': 'command_completion',
               \       },
               \       'Edit .zshrc': {
               \\        " This will create two relative shortcuts for this menu
@@ -92,7 +97,7 @@ unite_menus#Define        This method will define a brand new unite menu,
               \\        " relative keymaps in the same menu item
               \         'relative_keymap': 'vr',
               \         'command': 'so $MYVIMRC',
-              \         'command_action': 'execute',
+              \         'kind': 'command',
               \       },
               \     },
               \   },
