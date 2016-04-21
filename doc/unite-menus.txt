@@ -3,6 +3,7 @@
 Author:   Kelvin Stinghen <http://kelvinst.github.io>
 
 |unite-menus-introduction|      Introduction
+|unite-menus-variables|         Variables
 |unite-menus-functions|         Functions
 
 INTRODUCTION                            *unite-menus-introduction* *unite-menus*
@@ -14,59 +15,86 @@ this plugin is for you!
 The main function is the |unite_menus#Define|. Keep scrolling to find its
 documentation.
 
+VARIABLES                                                *unite-menus-variables*
+
+                                                          *g:unite_menus_keymap*
+g:unite_menus_keymap      This is the default keymap of unite menus. If you type
+                          it no normal mode, it will open a list of all the
+                          menus you have defined using this plugin. This
+                          variable is also used to create |relative_keymap| on
+                          menus.
+
+                          A good idea is to map it to something easy like:
+>
+        let g:unite_menus_keymap = '<Leader><Leader>'
+<
+
+                          Default value:
+
+>
+        let g:unite_menus_keymap = '<Leader>/'
+<
+
 FUNCTIONS                                                *unite-menus-functions*
 
                                                             *unite_menus#Define*
 unite_menus#Define        This method will define a brand new unite menu,
-                          following some convnetions of style. The signature
+                          following some conventions of style. The signature
                           is the following:
->
-        unite_menus#Define(name, description, keymap, candidates)
-<
-
-                          And these are the params explanation:
 
 >
-  name         String         The identifier name of the menu
-  description  String         A description that will be used on the menu list
-                              opened by the <Leader>/ default keymap
-  keymap       String         The keymap that will be used to directly open the
-                              menu
-  candidates   Dictionary     The menu candidates to be defined, the key will be
-                              used for the menu description, and each key of the
-                              dictionary must point to another dictionary with
-                              the following config:
-    keymap         Dictionary The keymap that will be used to directly call the
-                              candidate command
-    command        String     The command that needs to be executed when
-                              the candidate is selected
-    command_action String     Accepts the strings: 'execute' and 'complete'. And
-                              defines what needs to be done with the command
-                              when you select the menu item.
-                              Defaults to 'execute'
-
-<
-
-                          Here is a call example for you:
-
->
-        call unite_menus#Define("shortcuts", "Shortcuts", "<Leader>s", {
-              \   'Reload .vimrc': {
-              \     'keymap': '<Leader>vr',
-              \     'command': 'so $MYVIMRC',
-              \     'command_action': 'execute',
+        " all the params were included in this example so it can be more
+        " explicative, there will be a detailed params explanations soon, if you
+        " want to copy this to your .vimrc, just remove the lines commented with
+        " double slashes and double quotes and it might work
+        call unite_menus#Define({
+              \   'shortcuts': {
+              \\    " that's the name we gave to the menu
+              \     'description': 'Shortcuts',
+              \\    " this will create two global shortcuts for this menu
+              \     'keymap': ['s', '<Leader>s'],
+              \\    " the list of items of your menu
+              \     'candidates': {
+              \\      " this will be used as the description of the item
+              \       'Edit .gitconfig': {
+              \\        " the command to be executed when you select this item
+              \         'command': 'vsplit ~/.gitconfig',
+              \       },
+              \       'Edit .vimrc': {
+              \\        " this will create a global shortcut for this menu item
+              \         'keymap': '<Leader>ve',
+              \         'command': 'vsplit $MYVIMRC',
+              \\        " this defines which action (execute or complete) will
+              \\        " be executed when you select this menu, defaults to
+              \\        " 'execute'
+              \         'command_action': 'complete',
+              \       },
+              \       'Edit .zshrc': {
+              \\        " this will create two relative shortcuts for this menu
+              \\        " item (so, to open it, you can type any of thess key
+              \\        " combinations: zs, zse, <Leader>sz or <Leader>sze)
+              \         'relative_keymap': ['z', 'ze'],
+              \         'command': 'vsplit ~/.zshrc',
+              \       },
+              \       'Reload .vimrc': {
+              \         'keymap': '<Leader>vr',
+              \\        " as you can se here, you can combine global and
+              \\        " relative keymaps in the same menu item
+              \         'relative_keymap': 'vr',
+              \         'command': 'so $MYVIMRC',
+              \         'command_action': 'execute',
+              \       },
+              \     },
               \   },
-              \   'Edit .vimrc': {
-              \     'keymap': '<Leader>ve',
-              \     'command': 'vsplit $MYVIMRC',
-              \     'command_action': 'complete',
-              \   },
-              \   'Edit .zshrc': {
-              \     'command': 'vsplit ~/.zshrc',
-              \   },
-              \   'Edit .gitconfig': {
-              \     'command': 'vsplit ~/.gitconfig',
-              \   },
+              \\  " as you can see, you can create more than one menu by call
+              \   'rails': {
+              \\    " that's the name we gave to the other menu
+              \     'description': 'Rails',
+              \\    " you can use relative keymappings for menus too, see
+              \\    " |g:unite_menus_keymap| variable to know from what this is
+              \\    " relative
+              \     'relative_keymap': ['r', 'R'],
+              \   }
               \ })
 <
 
