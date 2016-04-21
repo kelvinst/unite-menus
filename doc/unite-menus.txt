@@ -43,9 +43,7 @@ unite_menus#Define        This method will define a brand new unite menu,
                           is the following:
 
 >
-        " all the params were included in this example so it can be more
-        " explicative, there will be a detailed params explanations soon, if you
-        " want to copy this to your .vimrc, just remove the lines commented with
+        " if you want to copy this to your .vimrc, just remove the lines with
         " double slashes and double quotes and it might work
         call unite_menus#Define({
               \   'shortcuts': {
