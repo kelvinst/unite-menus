@@ -109,21 +109,45 @@ function! unite_menus#Define(menus) abort
   for key in sort(keys(a:menus))
     let value = a:menus[key]
 
-    let keymaps = s:Get_keymaps(value, g:unite_menus_keymap)
+    let parent_keymaps = []
+    if has_key(value, 'parent_menu')
+      let parent_name = value.parent_menu
+      let parent_menu = g:unite_source_menu_menus[parent_name]
+
+      let parent_keymaps = parent_menu._unite_menus.saved_keymaps
+    else
+      let parent_keymaps = [g:unite_menus_keymap]
+    endif
+
+    let keymaps = s:Get_keymaps(value, parent_keymaps)
     let g:unite_source_menu_menus = extend(g:unite_source_menu_menus, {
           \   key : {
           \     'description': value.description,
           \     'candidates': s:Handle_candidates(keymaps, value.candidates),
-          \   }
+          \     '_unite_menus': {
+          \       'saved_keymaps': keymaps
+          \     },
+          \   },
           \ })
 
     let open_menu_command = 'Unite -silent menu:'.key
-    call add(g:unite_source_menu_menus.menus.candidates, {
-          \   'word': s:Get_menu_item_word(value.description, keymaps),
-          \   'kind': 'command',
-          \   'action__command': open_menu_command,
-          \ })
 
+    if has_key(value, 'parent_menu')
+      let parent_name = value.parent_menu
+      let parent_menu = g:unite_source_menu_menus[parent_name]
+
+      call add(parent_menu.candidates, {
+            \   'word': s:Get_menu_item_word(value.description, keymaps),
+            \   'kind': 'command',
+            \   'action__command': open_menu_command,
+            \ })
+    else
+      call add(g:unite_source_menu_menus.menus.candidates, {
+            \   'word': s:Get_menu_item_word(value.description, keymaps),
+            \   'kind': 'command',
+            \   'action__command': open_menu_command,
+            \ })
+    endif
 
     for keymap in keymaps
       exec 'nmap '.keymap.' :'.open_menu_command.'<CR>'

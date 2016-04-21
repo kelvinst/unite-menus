@@ -47,28 +47,28 @@ unite_menus#Define        This method will define a brand new unite menu,
         " double slashes and double quotes and it might work
         call unite_menus#Define({
               \   'shortcuts': {
-              \\    " that's the name we gave to the menu
+              \\    " That's the name we gave to the menu
               \     'description': 'Shortcuts',
-              \\    " this will create two global shortcuts for this menu
+              \\    " This will create two global shortcuts for this menu
               \     'keymap': ['s', '<Leader>s'],
-              \\    " the list of items of your menu
+              \\    " The list of items of your menu
               \     'candidates': {
-              \\      " this will be used as the description of the item
+              \\      " This will be used as the description of the item
               \       'Edit .gitconfig': {
-              \\        " the command to be executed when you select this item
+              \\        " The command to be executed when you select this item
               \         'command': 'vsplit ~/.gitconfig',
               \       },
               \       'Edit .vimrc': {
-              \\        " this will create a global shortcut for this menu item
+              \\        " This will create a global shortcut for this menu item
               \         'keymap': '<Leader>ve',
               \         'command': 'vsplit $MYVIMRC',
-              \\        " this defines which action (execute or complete) will
+              \\        " This defines which action (execute or complete) will
               \\        " be executed when you select this menu, defaults to
               \\        " 'execute'
               \         'command_action': 'complete',
               \       },
               \       'Edit .zshrc': {
-              \\        " this will create two relative shortcuts for this menu
+              \\        " This will create two relative shortcuts for this menu
               \\        " item (so, to open it, you can type any of thess key
               \\        " combinations: zs, zse, <Leader>sz or <Leader>sze)
               \         'relative_keymap': ['z', 'ze'],
@@ -76,7 +76,7 @@ unite_menus#Define        This method will define a brand new unite menu,
               \       },
               \       'Reload .vimrc': {
               \         'keymap': '<Leader>vr',
-              \\        " as you can se here, you can combine global and
+              \\        " As you can se here, you can combine global and
               \\        " relative keymaps in the same menu item
               \         'relative_keymap': 'vr',
               \         'command': 'so $MYVIMRC',
@@ -86,13 +86,22 @@ unite_menus#Define        This method will define a brand new unite menu,
               \   },
               \\  " as you can see, you can create more than one menu by call
               \   'rails': {
-              \\    " that's the name we gave to the other menu
+              \\    " That's the name we gave to the other menu
               \     'description': 'Rails',
-              \\    " you can use relative keymappings for menus too, see
+              \\    " You can use relative keymappings for menus too, see
               \\    " |g:unite_menus_keymap| variable to know from what this is
               \\    " relative
               \     'relative_keymap': ['r', 'R'],
-              \   }
+              \   },
+              \   'rails_utils' {
+              \\    " This can be used to define this as a submenu of another
+              \\    " menu, but the parent menu must be defined first, please.
+              \\    " With this configured, this menu will appear as a child of
+              \\    " the 'rails' menu and not on the main menu list, the
+              \\    " relative keymapping will be relative to its parent menu too
+              \     'parent_menu': 'rails',
+              \     'description': 'Rails Utils',
+              \   },
               \ })
 <
 
