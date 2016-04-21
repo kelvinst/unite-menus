@@ -1,3 +1,6 @@
+let g:unite_menus_keymap = '<Leader>/'
+let g:unite_menus_default_keymap_arguments = '<silent> <unique>'
+
 let g:unite_source_menu_menus = {
       \   'menus': {
       \     'description': 'Menus Menu',
@@ -5,8 +8,17 @@ let g:unite_source_menu_menus = {
       \   }
       \ }
 
-let g:unite_menus_keymap = '<Leader>/'
-exec 'nmap '.g:unite_menus_keymap.' :Unite -silent menu:menus<CR>'
+function! s:Define_keymap(keymap, command, with_cr)
+  let keymap_cmd = 'nmap '.g:unite_menus_default_keymap_arguments.' '.a:keymap
+  let keymap_cmd = keymap_cmd.' :'.a:command
+  if a:with_cr == 1
+    let keymap_cmd = keymap_cmd.'<CR>'
+  end
+
+  exec keymap_cmd
+endfunction
+
+call s:Define_keymap(g:unite_menus_keymap, 'Unite -silent menu:menus', 1)
 
 function! s:Get_command_action(candidate) abort
   let command_action = 'execute'
@@ -71,14 +83,12 @@ function! s:Handle_candidate(key, candidate, menu_keymaps) abort
 
   " Keymap definition
   for keymap in keymaps
-    let cmd = a:candidate['command']
-    let keymap_cmd = 'nmap '.keymap.' :'.cmd
-
+    let with_cr = 0
     if command_action == 'execute'
-      let keymap_cmd = keymap_cmd.'<CR>'
+      let with_cr = 1
     endif
 
-    exec keymap_cmd
+    call s:Define_keymap(keymap, a:candidate['command'], with_cr)
   endfor
 
   let new_candidate = {
@@ -150,8 +160,8 @@ function! unite_menus#Define(menus) abort
     endif
 
     for keymap in keymaps
-      exec 'nmap '.keymap.' :'.open_menu_command.'<CR>'
-      exec 'nmap '.keymap.'/ :'.open_menu_command.'<CR>'
+      call s:Define_keymap(keymap, open_menu_command, 1)
+      call s:Define_keymap(keymap.'/', open_menu_command, 1)
     endfor
   endfor
 
