@@ -1,5 +1,5 @@
 let g:unite_menus_keymap = '<Leader>/'
-let g:unite_menus_default_keymap_arguments = '<silent> <unique>'
+let g:unite_menus_keymap_arguments = '<silent> <unique>'
 
 let g:unite_source_menu_menus = {
       \   'menus': {
@@ -9,7 +9,7 @@ let g:unite_source_menu_menus = {
       \ }
 
 function! s:Define_keymap(keymap, command, with_cr)
-  let keymap_cmd = 'nmap '.g:unite_menus_default_keymap_arguments.' '.a:keymap
+  let keymap_cmd = 'nmap '.g:unite_menus_keymap_arguments.' '.a:keymap
   let keymap_cmd = keymap_cmd.' :'.a:command
   if a:with_cr == 1
     let keymap_cmd = keymap_cmd.'<CR>'

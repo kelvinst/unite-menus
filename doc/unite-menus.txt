@@ -35,6 +35,18 @@ g:unite_menus_keymap      This is the default keymap of unite menus. If you type
         let g:unite_menus_keymap = '<Leader>/'
 <
 
+                                                *g:unite_menus_keymap_arguments*
+g:unite_menus_keymap_arguments  This is the default arguments sent to keymap,
+                                for more details about what kind of arguments we
+                                are talking about, type >:h map-arguments< and
+                                you will be on its documentation
+
+                                Default value:
+
+>
+        let g:unite_menus_keymap_arguments = '<silent> <unique>'
+<
+
 FUNCTIONS                                                *unite-menus-functions*
 
                                                             *unite_menus#Define*
