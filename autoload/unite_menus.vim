@@ -1,6 +1,6 @@
 let g:unite_source_menu_menus = {
       \   'menus': {
-      \     'description': 'menus menu'
+      \     'description': 'Menus Menu'
       \   }
       \ }
 
@@ -43,40 +43,30 @@ function! s:Redefine_unite_menu_menus() abort
 
   function! g:unite_source_menu_menus.menus.map(key, value)
     return {
-          \   'word': a:value['description'],
+          \   'word': a:value['long_description'],
           \   'kind': 'command',
           \   'action__command': s:Get_open_menu_command(a:key),
           \ }
   endfunction
 endfunction
 
-function! s:Define_keymappings(name, menu_keymap, candidates) abort
-  exec 'nmap '.a:menu_keymap.' :'.s:Get_open_menu_command(a:name).'<CR>'
-  exec 'nmap '.a:menu_keymap.'/ :'.s:Get_open_menu_command(a:name).'<CR>'
-
-  for key in keys(a:candidates)
-    let candidate = a:candidates[key]
-
-    let keymaps = s:Get_keymaps(candidate, a:menu_keymap)
-    for keymap in keymaps
-      let cmd = candidate['command']
-      let keymap_cmd = 'nmap '.keymap.' :'.cmd
-
-      let command_action = s:Get_command_action(candidate)
-      if command_action == 'execute'
-        let keymap_cmd = keymap_cmd.'<CR>'
-      endif
-
-      exec keymap_cmd
-    endfor
-  endfor
-endfunction
-
 function! unite_menus#Map_candidates(key, value) abort
-  let keymaps = s:Get_keymaps(a:value, '<relative>')
-  let item_description = printf('▷ %-40s %37s', a:key, join(keymaps, ' '))
-
+  let keymaps = s:Get_keymaps(a:value, a:value['menu_keymap'])
   let command_action = s:Get_command_action(a:value)
+
+  " Keymap definition
+  for keymap in keymaps
+    let cmd = a:value['command']
+    let keymap_cmd = 'nmap '.keymap.' :'.cmd
+
+    if command_action == 'execute'
+      let keymap_cmd = keymap_cmd.'<CR>'
+    endif
+
+    exec keymap_cmd
+  endfor
+
+  let item_description = printf('▷ %-40s %37s', a:key, join(keymaps, ' '))
   if command_action == 'complete'
     return {
           \   'word': item_description,
@@ -93,10 +83,16 @@ function! unite_menus#Map_candidates(key, value) abort
 endfunction
 
 function! unite_menus#Define(name, description, keymap, candidates) abort
+  for key in keys(a:candidates)
+    let candidate = a:candidates[key]
+    let candidate['menu_keymap'] = a:keymap
+  endfor
+
   let menu_description = printf('▷ %-40s %37s', a:description, a:keymap)
   let g:unite_source_menu_menus = extend(g:unite_source_menu_menus, {
         \   a:name : {
-        \     'description': menu_description,
+        \     'long_description': menu_description,
+        \     'description': a:description,
         \     'candidates': a:candidates,
         \     'map': function("unite_menus#Map_candidates"),
         \   }
@@ -105,7 +101,9 @@ function! unite_menus#Define(name, description, keymap, candidates) abort
   " This will recalculate the menus menu every new menu added
   call s:Redefine_unite_menu_menus()
 
-  call s:Define_keymappings(a:name, a:keymap, a:candidates)
+  exec 'nmap '.a:keymap.' :'.s:Get_open_menu_command(a:name).'<CR>'
+  exec 'nmap '.a:keymap.'/ :'.s:Get_open_menu_command(a:name).'<CR>'
+
   return 1
 endfunction
 
