@@ -1,5 +1,5 @@
 let g:unite_menus_keymap = '<Leader>/'
-let g:unite_menus_keymap_arguments = '<silent> <unique>'
+let g:unite_menus_keymap_arguments = ''
 
 let g:unite_source_menu_menus = {
       \   'menus': {

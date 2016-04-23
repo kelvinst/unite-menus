@@ -44,7 +44,7 @@ g:unite_menus_keymap_arguments  This is the default arguments sent to keymap,
                                 Default value:
 
 >
-        let g:unite_menus_keymap_arguments = '<silent> <unique>'
+        let g:unite_menus_keymap_arguments = ''
 <
 
 FUNCTIONS                                                *unite-menus-functions*
