@@ -1,5 +1,8 @@
+g:unite_menus_keymap	unite-menus.txt	/*g:unite_menus_keymap*
+g:unite_menus_keymap_arguments	unite-menus.txt	/*g:unite_menus_keymap_arguments*
 unite-menus	unite-menus.txt	/*unite-menus*
 unite-menus-functions	unite-menus.txt	/*unite-menus-functions*
 unite-menus-introduction	unite-menus.txt	/*unite-menus-introduction*
+unite-menus-variables	unite-menus.txt	/*unite-menus-variables*
 unite-menus.txt	unite-menus.txt	/*unite-menus.txt*
 unite_menus#Define	unite-menus.txt	/*unite_menus#Define*
