@@ -169,3 +169,7 @@ function! unite_menus#Define(menus) abort
   return 1
 endfunction
 
+function! unite_menus#Redefine(menus) abort
+  g:unite_source_menu_menus = {}
+  unite_menus#Define(menus)
+endfunction
