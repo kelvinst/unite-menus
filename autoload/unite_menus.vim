@@ -170,6 +170,12 @@ function! unite_menus#Define(menus) abort
 endfunction
 
 function! unite_menus#Redefine(menus) abort
-  g:unite_source_menu_menus = {}
-  unite_menus#Define(menus)
+  let g:unite_source_menu_menus = {
+        \   'menus': {
+        \     'description': 'Menus Menu',
+        \     'candidates': [],
+        \   }
+        \ }
+
+  call unite_menus#Define(a:menus)
 endfunction
